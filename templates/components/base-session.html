@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}" />
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <!-- component -->
+    <div class="relative flex h-full w-full">
+      <div class="h-screen w-1/2 bg-black">
+        <div
+          class="mx-auto flex h-full w-2/3 flex-col justify-center text-white xl:w-1/2 pt-12"
+        >
+          <div>
+            <p class="text-2xl">{{title}}|</p>
+            <p>please {{title}} to continue|</p>
+          </div>
+
+          <div class="mt-10">
+            
+              {% csrf_token %} 
+              {% block controls %}
+              {% block button_session %}
+              
+              {% endblock %}
+              {% endblock %} 
+          </div>
+        </div>
+      </div>
+      <div class="h-screen w-1/2 bg-blue-600">
+        {% if grabar == 'Login' %}
+        <img
+          src="https://i1.sndcdn.com/artworks-000386724708-ygrbuj-t1080x1080.jpg"
+          class="h-full w-full"
+        />
+        {% else %}
+        {% comment %} <img
+          src="https://i1.sndcdn.com/avatars-000075070838-y6pno3-t500x500.jpg"
+          class="h-full w-full"
+        /> {% endcomment %}
+         {% comment %} <img
+          src="https://p16-capcut-sign-va.ibyteimg.com/tos-alisg-v-643f9f/ocCrZrPygIkSFIYZAAEAiWxlLALTZtzSABo9i~tplv-nhvfeczskr-1:250:0.webp?lk3s=44acef4b&x-expires=1741034195&x-signature=LhL51kY4zlPVjh7%2F4cNryOOVgVg%3D"
+          class="h-full w-full"
+        />  {% endcomment %}
+        <img
+        src="{% static 'apple-music-spotify-graphic.webp' %}"
+          class="h-full w-full"
+        /> 
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

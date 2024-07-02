@@ -1,0 +1,66 @@
+{% extends "components/baseList.html" %}
+{% load static %}
+
+{% block bgFavorite %}
+<main class="flex-1 overflow-y-auto bg-gradient-to-br from-green-900 to-green-500 text-white">
+{% endblock bgFavorite %}
+
+{% block cabezera %}
+<div class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-4">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-10 h-10 text-[#FF00FF]"
+        >
+            <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+            ></path>
+        </svg>
+        <h1 class="text-4xl font-bold flex items-center gap-2">
+            <img
+                src="{% static 'apple-music-spotify-graphic.webp' %}"
+                alt="Canciones que te gustan"
+                width="30"
+                height="30"
+                class="rounded-md"
+                style="aspect-ratio: 50 / 50; object-fit: cover"
+            />
+            Canciones que te gustan
+        </h1>
+    </div>
+    <div>
+        <p class="text-lg">{{ user.username }}</p>
+        <p class="text-gray-400">{{ favorities.count }} canciones</p>
+    </div>
+</div>
+{% endblock cabezera %}
+
+{% block columns %}
+<div class="font-bold">#</div>
+<div>Titulo</div>
+<div>Emocion</div>
+<div>Artista</div>
+<div class="flex items-center justify-end gap-2">Duracion</div>
+{% endblock columns %}
+
+{% block row %}
+{% for song in favorities %}
+<div class="font-bold">{{ forloop.counter }}.</div>
+<div class="play-icon" id="playIcon-{{ song.id }}" data-song-path="{{ song.music.song_path }}">{{ song.music.title }}</div>
+<div>{{ song.music.emotion }}</div>
+<div>{{ song.music.artist }}</div>
+<div class="flex items-center justify-end gap-2">{{ song.music.duration }}</div>
+{% endfor %}
+    <script src="{% static 'js/favoriteMusic.js' %}"></script>
+{% endblock row %}
+
+
+</main>

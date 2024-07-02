@@ -1,0 +1,242 @@
+{% extends "components/base.html" %} {% block content %} {% load static %}
+
+<section class="bg-gray-800 text-white py-12 px-6">
+  <div class="max-w-4xl mx-auto flex flex-wrap gap-8 justify-center">
+    <div class="w-full md:w-1/2">
+      <h1 id="titleOne" class="text-4xl font-bold mb-4">
+        Discover the best music
+      </h1>
+      <p class="text-gray-400 mb-8" id="titleMusic">
+        Explore a vast library of songs, albums, and artists.
+      </p>
+      <form id="emotionForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="flex gap-4">
+          {% if not user.is_authenticated %}
+          <button
+            disabled
+            type="button"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 cursor-pointer"
+          >
+            Start emotions
+          </button>
+          {% else %}
+          <button
+            type="button"
+            id="startEmotionsBtn"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 cursor-pointer"
+          >
+            Start emotions
+          </button>
+          {% endif %}
+
+          <button
+            type="button"
+            id="browseGenresBtn"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+          >
+            Browse Genres
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="w-full md:w-1/2">
+      <img
+        src="{% static 'apple-music-spotify-graphic.webp' %}"
+        alt="Hero Image"
+        class="rounded-lg w-full"
+        style="object-fit: cover; aspect-ratio: 1 / 1"
+        id="imgMusic"
+      />
+    </div>
+  </div>
+</section>
+<div id="emotionText" class="text-center text-2xl font-bold mb-4"></div>
+<div id="cameraModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
+  <div
+    class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <!-- Panel del modal -->
+    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <!-- Contenido del modal -->
+    <span
+      class="hidden sm:inline-block sm:align-middle sm:h-screen"
+      aria-hidden="true"
+      >&#8203;</span
+    >
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+    >
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <h2 class="text-lg font-bold mb-4">Emotion Detection</h2>
+        <video id="video" width="100%" autoplay></video>
+        <canvas id="canvas" width="100%" style="display: none"></canvas>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button
+          id="closeCameraModal"
+          type="button"
+          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- lista de musicas -->
+<section class="py-12 px-6">
+  <div id="musicListModal" class="max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4" id="titleEmotion">
+      Music List Emotion
+    </h2>
+    <div class="border rounded-lg overflow-hidden">
+      <div class="relative w-full overflow-auto">
+        <table class="w-full caption-bottom text-sm">
+          <thead class="[&amp;_tr]:border-b">
+            <tr
+              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+            >
+              <th
+                class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0 w-[80px]"
+              >
+                #
+              </th>
+              <th
+                class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0"
+              >
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody id="musicList" class="[&amp;_tr:last-child]:border-0">
+            <!-- Las canciones se insertarán dinámicamente aquí -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-gray-100 py-12 px-6">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-2xl font-bold mb-6">Browse by Genre</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <a
+        class="bg-white rounded-lg shadow-md p-4 hover:bg-gray-200 transition-colors"
+        href="#"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-blue-500 w-8 h-8 mb-2 mx-auto"
+        >
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        <h3 class="text-lg font-bold mb-2">Pop</h3>
+        <p class="text-gray-500">Upbeat and catchy tunes</p>
+      </a>
+      <a
+        class="bg-white rounded-lg shadow-md p-4 hover:bg-gray-200 transition-colors"
+        href="#"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-red-500 w-8 h-8 mb-2 mx-auto"
+        >
+          <path
+            d="m20 7 1.7-1.7a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0L17 4v3Z"
+          ></path>
+          <path d="m17 7-5.1 5.1"></path>
+          <circle cx="11.5" cy="12.5" r=".5" fill="currentColor"></circle>
+          <path
+            d="M6 12a2 2 0 0 0 1.8-1.2l.4-.9C8.7 8.8 9.8 8 11 8c2.8 0 5 2.2 5 5 0 1.2-.8 2.3-1.9 2.8l-.9.4A2 2 0 0 0 12 18a4 4 0 0 1-4 4c-3.3 0-6-2.7-6-6a4 4 0 0 1 4-4"
+          ></path>
+          <path d="m6 16 2 2"></path>
+        </svg>
+        <h3 class="text-lg font-bold mb-2">Rock</h3>
+        <p class="text-gray-500">Powerful and energetic</p>
+      </a>
+      <a
+        class="bg-white rounded-lg shadow-md p-4 hover:bg-gray-200 transition-colors"
+        href="#"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-purple-500 w-8 h-8 mb-2 mx-auto"
+        >
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" x2="12" y1="19" y2="22"></line>
+        </svg>
+        <h3 class="text-lg font-bold mb-2">Hip-Hop</h3>
+        <p class="text-gray-500">Rhythmic and innovative</p>
+      </a>
+      <a
+        class="bg-white rounded-lg shadow-md p-4 hover:bg-gray-200 transition-colors"
+        href="#"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-yellow-500 w-8 h-8 mb-2 mx-auto"
+        >
+          <path
+            d="M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"
+          ></path>
+          <path d="M2 14h20"></path>
+          <path d="M6 14v4"></path>
+          <path d="M10 14v4"></path>
+          <path d="M14 14v4"></path>
+          <path d="M18 14v4"></path>
+        </svg>
+        <h3 class="text-lg font-bold mb-2">Classical</h3>
+        <p class="text-gray-500">Timeless and elegant</p>
+      </a>
+    </div>
+  </div>
+</section>
+    {% if not user.is_authenticated %}
+<script>
+    // Limpiar localStorage si el usuario no está autenticado
+    localStorage.clear();
+</script>
+{% endif %}
+<script src="{% static 'js/startEmotion.js' %}"></script>
+    <script src="{% static 'js/audioFirebase.js' %}"></script>
+{% endblock %}

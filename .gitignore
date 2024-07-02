@@ -1,0 +1,12 @@
+# created by virtualenv automatically
+venv
+venvEmociones
+db.sqlite3
+package-lock.json
+node_modules
+
+.env
+t.txt
+deploy.prototxt
+haarcascade_frontalface2.xml
+staticfiles

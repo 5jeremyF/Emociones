@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotion Music Player</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+    <div
+      class="bg-gray-900 text-white py-4 px-6 flex items-center justify-between"
+    >
+      <div class="flex items-center gap-4">
+        <img
+          id="albumCover"
+          src="{% static 'placeholder.svg' %}"
+          alt="Album Cover"
+          width="50"
+          height="50"
+          class="rounded-md"
+          style="aspect-ratio: 50 / 50; object-fit: cover"
+        />
+        <div>
+          <h3 id="songTitle" class="text-lg font-bold">Song Title</h3>
+          <p id="artistName" class="text-gray-400">Artist Name</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button
+          id="prevBtn"
+          class="inline-flex items-center justify-center ..."
+        >
+          <!-- SVG icon for previous button -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <polygon points="11 19 2 12 11 5 11 19"></polygon>
+            <polygon points="22 19 13 12 22 5 22 19"></polygon>
+          </svg>
+        </button>
+        <button
+          id="playPauseBtn"
+          class="inline-flex items-center justify-center ..."
+        >
+          <!-- SVG icon for play/pause button -->
+          <svg
+            id="playIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <polygon points="6 3 20 12 6 21 6 3"></polygon>
+          </svg>
+          <svg
+            id="pauseIcon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+            style="display: none"
+          >
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+        </button>
+        <button
+          id="nextBtn"
+          class="inline-flex items-center justify-center ..."
+        >
+          <!-- SVG icon for next button -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <polyline points="15 17 20 12 15 7"></polyline>
+            <path d="M4 18v-2a4 4 0 0 1 4-4h12"></path>
+          </svg>
+        </button>
+        <button class="inline-flex items-center justify-center ...">
+          {% csrf_token %}
+          <!-- SVG icon for detect emotion button -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <path d="m17 2 4 4-4 4"></path>
+            <path id="save" d="M3 11v-1a4 4 0 0 1 4-4h14"></path>
+            <path d="m7 22-4-4 4-4"></path>
+            <path d="M21 13v1a4 4 0 0 1-4 4H3"></path>
+          </svg>
+        </button>
+        <span
+          dir="ltr"
+          data-orientation="horizontal"
+          aria-disabled="false"
+          class="relative flex touch-none select-none items-center w-full [&amp;>span:first-child]:h-1 [&amp;>span:first-child]:bg-white/30 [&amp;_[role=slider]]:bg-white [&amp;_[role=slider]]:w-3 [&amp;_[role=slider]]:h-3 [&amp;_[role=slider]]:border-0 [&amp;>span:first-child_span]:bg-white [&amp;_[role=slider]:focus-visible]:ring-0 [&amp;_[role=slider]:focus-visible]:ring-offset-0 [&amp;_[role=slider]:focus-visible]:scale-105 [&amp;_[role=slider]:focus-visible]:transition-transform"
+          style="--radix-slider-thumb-transform: translateX(-50%)"
+        >
+          <span
+            data-orientation="horizontal"
+            class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
+          >
+            <span
+              data-orientation="horizontal"
+              class="absolute h-full bg-primary"
+              style="left: 0%; right: 50%"
+            ></span>
+          </span>
+          <span
+            style="
+              transform: var(--radix-slider-thumb-transform);
+              position: absolute;
+              left: calc(50% + 0px);
+            "
+          >
+            <span
+              id="save_favorities"
+              role="slider"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-orientation="horizontal"
+              data-orientation="horizontal"
+              tabindex="0"
+              class="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              data-radix-collection-item=""
+              aria-valuenow="50"
+              style=""
+            ></span>
+          </span>
+        </span>
+        <button
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    {% else %}
+
+    <div class="bg-muted p-6 md:py-7 w-full">
+      <div
+        class="container max-w-7xl flex flex-col items-center gap-4 text-center md:flex-row md:justify-between"
+      >
+        <div class="text-primary-foreground">
+          <h3 class="text-lg font-medium text-primary">
+            🎶 Música para tu alma 🎶
+          </h3>
+          <p class="text-sm text-secondary-foreground">
+            ¡Disfruta de tu música favorita en nuestra plataforma vibrante y
+            llena de vida!
+          </p>
+        </div>
+        <a
+          class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          href={% url 'security:signup' %}
+        >
+          ¡Regístrate! 🎉
+        </a>
+      </div>
+    </div>
+
+    {% endif %}
+    <audio id="audioPlayer" controls style="display: none">
+      <source id="audioSource" src="" type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+    <script src="{% static 'js/detectEmotion.js' %}"></script>
+  </body>
+</html>

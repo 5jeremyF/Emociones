@@ -1,0 +1,75 @@
+{% extends 'components/CardBase.html' %}
+{% load static %}
+
+{% block title %}
+  <h2 class="text-2xl font-bold mb-4">Histories</h2>
+{% endblock title %}
+
+{% block card %}
+  {% for history in histories %}
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+      <img data-img="{{ history.music.image }}" src="{{ history.music.image }}" alt="Album Cover" width="200" height="200" class="rounded-lg mb-4" style="aspect-ratio: 200 / 200; object-fit: cover" />
+      <h3 class="text-lg font-bold mb-2" data-title="{{ history.music.title }}">{{ history.music.title }}</h3>
+      <p class="text-gray-500 mb-2" data-artist="{{ history.music.artist }}">{{ history.music.artist }}</p>
+      <p class="text-gray-500 mb-2">Listened on: {{ history.date }}</p>
+      <div class="flex items-center gap-2">
+        {% if history.music.emotion.name == 'angry' %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-red-500" data-id="99">
+            <circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+            <path d="M7.5 8 10 9"></path><path d="m14 9 2.5-1"></path>
+            <path d="M9 10h0"></path><path d="M15 10h0"></path>
+          </svg>
+          <span class="text-sm text-red-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'disgust' %}
+          <svg data-id="107" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-green-500">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+          </svg>
+          <span class="text-sm text-green-500" data-emotion="{{ history.music.emotion.name }}" >{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'fear' %}
+          <svg data-id="115" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-yellow-500">
+            <path d="M9 10h.01"></path><path d="M15 10h.01"></path>
+            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"></path>
+          </svg>
+          <span class="text-sm text-yellow-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'happy' %}
+          <svg data-id="35" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-green-500">
+            <circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+            <line x1="9" x2="9.01" y1="9" y2="9"></line>
+            <line x1="15" x2="15.01" y1="9" y2="9"></line>
+          </svg>
+          <span class="text-sm text-green-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'neutral' %}
+          <svg data-id="51" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-yellow-500">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" x2="16" y1="15" y2="15"></line>
+            <line x1="9" x2="9.01" y1="9" y2="9"></line>
+            <line x1="15" x2="15.01" y1="9" y2="9"></line>
+          </svg>
+          <span class="text-sm text-yellow-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'sad' %}
+          <svg data-id="43" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-red-500">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+            <line x1="9" x2="9.01" y1="9" y2="9"></line>
+            <line x1="15" x2="15.01" y1="9" y2="9"></line>
+          </svg>
+          <span class="text-sm text-red-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% elif history.music.emotion.name == 'surprise' %}
+          <svg data-id="123" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-blue-500">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+            <line x1="9" x2="9.01" y1="9" y2="9"></line>
+            <line x1="15" x2="15.01" y1="9" y2="9"></line>
+          </svg>
+          <span class="text-sm text-blue-500" data-emotion="{{ history.music.emotion.name }}">{{ history.music.emotion.name }}</span>
+        {% endif %}
+        <svg id="playIcon-{{ history.id }}" data-song-path="{{ history.music.song_path }}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ml-20 play-icon">
+          <polygon points="6 3 20 12 6 21 6 3"></polygon>
+        </svg>
+      </div>
+    </div>
+  {% endfor %}
+  <script src="{% static 'js/reprohistories.js' %}"></script>
+{% endblock card %}
